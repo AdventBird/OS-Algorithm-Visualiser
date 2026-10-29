@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Online Shopping &amp; Order Processing – OS Algorithm Visualizer</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0a1015;--card:#121b23;--card-2:#17232d;--ink:#edf4f8;--mut:#8fa4b3;
+  --bd:#293b47;--acc:#32d6c0;--acc-dark:#0f9488;--acct:#06211e;
+  --ok:#6ce0a0;--bad:#ff8585;--code:#0c151c;--shadow:0 16px 38px rgba(0,0,0,.18);
+  --r:14px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:20px;scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 10% 0%,rgba(26,113,117,.14),transparent 34rem),radial-gradient(ellipse at 100% 15%,rgba(49,102,145,.12),transparent 30rem),var(--bg);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+main{max-width:1240px;margin:0 auto;padding:30px 28px 44px}
+.page-header{display:flex;align-items:center;gap:14px;margin:0 0 24px;min-height:48px}
+.brand-mark{display:grid;place-items:center;flex:0 0 46px;height:46px;border-radius:13px;background:linear-gradient(135deg,#37e3ce,#159eaa);color:#06211f;font-size:1rem;font-weight:900;letter-spacing:-.06em;box-shadow:0 7px 24px rgba(45,212,191,.15)}
+h1{font-size:clamp(1.45rem,2.2vw,2rem);line-height:1.2;letter-spacing:-.04em;margin:0;font-weight:760}
+h2{font-size:1rem;line-height:1.35;letter-spacing:-.015em;margin:0 0 14px;font-weight:700}
+p.s{margin:0 0 12px;color:var(--mut)}
+.card{background:linear-gradient(150deg,rgba(23,35,45,.98),rgba(17,27,35,.98));border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-bottom:18px;box-shadow:var(--shadow);min-width:0}
+.orders-card{padding:20px 20px 16px}
+.orders-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.orders-heading h2{margin:0}
+.orders-actions{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}
+.orders-editor-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px;padding:13px 14px;background:rgba(5,14,20,.32);border:1px solid var(--bd);border-radius:10px}
+.order-edit-message{margin:0;color:var(--mut);font-size:.82rem;line-height:1.45;flex:1 1 260px}
+.order-cell-input{width:70px;min-width:64px;min-height:34px;padding:5px 6px;text-align:center;font-variant-numeric:tabular-nums}
+.tuple-inputs{display:flex;align-items:center;justify-content:center;gap:5px}
+#ot .order-edit-cell{padding:6px 7px}
+#ot .edit-order-id{white-space:nowrap}
+.count-pill{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border:1px solid var(--bd);border-radius:999px;color:var(--mut);font-size:.78rem;font-weight:650;white-space:nowrap}
+.count-dot{width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 3px rgba(50,214,192,.1)}
+.resource-strip{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.resource-pill{display:flex;align-items:center;gap:9px;min-height:45px;padding:7px 11px;background:rgba(7,15,21,.38);border:1px solid var(--bd);border-radius:10px;min-width:0}
+.resource-code{display:grid;place-items:center;flex:0 0 27px;height:27px;border-radius:8px;background:rgba(50,214,192,.13);color:var(--acc);font-size:.75rem;font-weight:850}
+.resource-pill b,.resource-pill small{display:block;line-height:1.3}.resource-pill b{font-size:.82rem;font-weight:650}.resource-pill small{font-size:.74rem;color:var(--mut);margin-top:2px}
+.tabs{display:flex;gap:8px;overflow-x:auto;margin:0 0 16px;padding:3px 2px 8px;scrollbar-width:thin;scrollbar-color:var(--bd) transparent}
+.tabs button{display:flex;align-items:center;gap:9px;flex:none;border:1px solid var(--bd);background:rgba(18,27,35,.78);color:var(--mut);padding:10px 14px;border-radius:10px;font:inherit;font-size:.88rem;font-weight:650;cursor:pointer;transition:background .18s,border-color .18s,color .18s,transform .18s}
+.tabs button::before{content:attr(data-step);display:grid;place-items:center;width:23px;height:23px;border-radius:7px;background:var(--card-2);border:1px solid var(--bd);font-size:.72rem;color:var(--mut)}
+.tabs button:hover{color:var(--ink);border-color:#486271;transform:translateY(-1px)}
+.tabs button.on{background:linear-gradient(135deg,#32d6c0,#24bba9);color:#06211e;border-color:transparent;box-shadow:0 6px 18px rgba(45,212,191,.12)}
+.tabs button.on::before{background:rgba(3,51,47,.11);color:#063d38;border-color:rgba(3,51,47,.14)}
+button.b{appearance:none;background:var(--acc);color:#06211e;border:1px solid transparent;padding:9px 13px;border-radius:9px;font:inherit;font-size:.88rem;font-weight:750;cursor:pointer;margin:1px 3px 1px 0;transition:filter .18s,transform .18s,box-shadow .18s}
+button.b:hover{filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 5px 14px rgba(45,212,191,.12)}
+button.b:active{transform:translateY(0)}button.b.g{background:rgba(8,16,22,.28);color:var(--ink);border-color:var(--bd);box-shadow:none}button.b.g:hover{background:var(--card-2);border-color:#486271}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+input,select{font:inherit;font-size:.9rem;padding:8px 10px;border:1px solid var(--bd);border-radius:9px;background:#0d161d;color:var(--ink);width:78px;min-height:38px}select{width:auto;min-width:125px;max-width:100%}
+.row{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:0 0 14px;color:var(--mut);font-size:.87rem}.row:last-child{margin-bottom:0}
+.scroll{overflow-x:auto;border-radius:9px}table{border-collapse:separate;border-spacing:0;width:100%;font-size:.88rem;min-width:540px}th,td{border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:10px 12px;text-align:center;white-space:nowrap}th:first-child,td:first-child{border-left:1px solid var(--bd)}tr:first-child th{border-top:1px solid var(--bd)}th{background:#202f3a;color:#dce8ee;font-weight:700;font-size:.8rem;letter-spacing:.015em}th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:8px}tbody tr,table tr{transition:background .14s}table tr:hover td{background:rgba(255,255,255,.025)}
+#ot{min-width:700px}#ot th{background:#1d2c36}#ot td{padding:9px 12px}
+.chip{display:inline-flex;align-items:center;justify-content:center;min-width:36px;padding:4px 9px;border-radius:7px;color:#10202b;font-weight:850;text-align:center;font-size:.8rem;line-height:1.2;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.slots{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 14px}.slot{width:60px;height:50px;border:1px dashed #425865;border-radius:10px;background:rgba(7,14,19,.34);display:flex;align-items:center;justify-content:center;transition:border-color .18s,background .18s}.slot:has(.chip){border-style:solid;border-color:#526e7c;background:rgba(255,255,255,.025)}
+.gantt{display:flex;margin:14px 0 3px;min-height:44px;overflow:hidden;border-radius:9px}.gantt div{display:flex;align-items:center;justify-content:center;border:1px solid rgba(5,16,22,.45);color:#10202b;font-weight:850;font-size:.82rem;min-width:20px}.tm{display:flex;font-size:.74rem;color:var(--mut);margin-bottom:12px}.tm span{text-align:left;border-left:1px solid var(--bd);padding-left:4px;overflow:hidden}
+.log{background:linear-gradient(180deg,rgba(7,15,21,.75),rgba(10,20,27,.75));border:1px solid rgba(41,59,71,.75);border-radius:10px;padding:12px;max-height:240px;overflow:auto;font:12.5px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;color:#c0d0d9}
+.ok{color:var(--ok);font-weight:750}.bad{color:var(--bad);font-weight:750}
+.mb{display:flex;height:38px;border:1px solid #415560;border-radius:9px;overflow:hidden;margin:6px 0 14px;background:#0d161d}.mb div{display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;color:#10202b;min-width:0;overflow:hidden}.fr{background:repeating-linear-gradient(135deg,rgba(123,148,163,.08) 0 6px,rgba(123,148,163,.23) 6px 8px);color:var(--mut)!important;font-weight:550!important}
+.stat{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.stat>span{display:inline-flex;align-items:center;gap:6px;background:rgba(5,14,20,.36);border:1px solid var(--bd);border-radius:9px;padding:8px 11px;color:var(--mut);font-size:.82rem}.stat b{font-size:.97rem;color:var(--ink);font-variant-numeric:tabular-nums}
+#mn{color:var(--mut);line-height:1.6;margin:12px 0}#gt,#mv,#im{min-width:0}#t1 h2[style],#t4 h2[style]{margin-top:22px!important;padding-top:16px;border-top:1px solid var(--bd)}
+[hidden]{display:none!important}
+@media(max-width:760px){main{padding:20px 14px 32px}.card{padding:15px;border-radius:12px;margin-bottom:14px}.orders-card{padding:15px}.page-header{margin-bottom:18px}.brand-mark{flex-basis:40px;height:40px;border-radius:11px}.tabs{gap:7px}.tabs button{padding:8px 10px;font-size:.82rem}.resource-pill{flex:1 1 145px}.row{gap:8px}table{font-size:.82rem}th,td{padding:8px 9px}.stat>span{padding:7px 9px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+.sub{color:var(--mut);font-size:.9rem;margin-top:2px}
+.story.note{border-left:3px solid var(--acc);background:rgba(5,14,20,.3);border-radius:0 10px 10px 0;padding:12px 14px;margin:0 0 16px}
+.story p{margin:0 0 10px;line-height:1.6}.story p.tip{margin:10px 0 0;color:var(--mut);font-size:.87rem}
+.who{display:flex;gap:8px;flex-wrap:wrap}.who span{border:1px solid var(--bd);border-radius:9px;padding:5px 10px;font-size:.8rem;color:var(--mut)}.who b{color:var(--acc)}
+.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:9px}.map div{padding:9px 11px;border:1px solid var(--bd);border-radius:10px;background:rgba(5,14,20,.3)}.map b{display:block;font-size:.88rem}.map small{color:var(--acc);font-size:.78rem}
+.pipe{display:flex;align-items:stretch;gap:4px;overflow-x:auto;margin:10px 0}.pipe div{flex:1 0 98px;text-align:center;padding:8px 6px;border:1px solid var(--bd);border-radius:9px;font-size:.8rem;font-weight:700;background:rgba(5,14,20,.3);transition:background .2s}.pipe div small{display:block;color:var(--mut);font-weight:400;font-size:.7rem}.pipe div.on{background:var(--acc);color:#06211e;border-color:transparent}.pipe div.on small{color:#06211e}.pipe i{align-self:center;color:var(--mut);font-style:normal}
+</style></head><body><main>
+<header class="page-header"><div class="brand-mark" aria-hidden="true">🛒</div><div><h1>Online Shopping &amp; Order Processing</h1><div class="sub">OS Algorithm Visualizer: learn four OS concepts through one big-sale scenario</div></div></header>
+<div class="card story"><h2>The scenario: a big sale on an online shop</h2><p>Thousands of customers place orders at the same moment. Each order needs payment, a stock update, an invoice and a delivery slot, and it competes for CPU time, memory and shared services. The four tabs below show which operating-system idea keeps the shop from losing orders, overselling or freezing.</p><div class="map"><div><b>Customers clicking “Buy”</b><small>→ Producers</small></div><div><b>Order queue</b><small>→ Bounded buffer (semaphores)</small></div><div><b>Order-processing worker</b><small>→ Consumer / CPU scheduling</small></div><div><b>Payment, Inventory, DB</b><small>→ Shared resources (Banker’s)</small></div><div><b>Server RAM</b><small>→ Memory partitions</small></div></div></div>
+<div class="card orders-card"><div class="orders-heading"><h2>Orders in today’s sale</h2><div class="orders-actions"><span class="count-pill"><span class="count-dot"></span>5 orders</span><button class="b g" id="editOrdersBtn" type="button" onclick="toggleOrderEdit()" aria-expanded="false">Edit orders</button></div></div><div class="scroll"><table id="ot"></table></div>
+<div id="ordersEditorBar" class="orders-editor-bar" hidden><p id="orderEditMessage" class="order-edit-message" role="status">Edit the numeric values, then save your changes.</p><div><button class="b" type="button" onclick="saveOrders()">Save changes</button><button class="b g" type="button" onclick="cancelOrderEdit()">Cancel</button><button class="b g" type="button" onclick="restoreDefaultOrders()">Restore defaults</button></div></div>
+<div class="resource-strip" aria-label="System resources">
+  <div class="resource-pill"><span class="resource-code">A</span><span><b>Payment Gateway</b><small>Column A · 10 units</small></span></div>
+  <div class="resource-pill"><span class="resource-code">B</span><span><b>Inventory Service</b><small>Column B · 5 units</small></span></div>
+  <div class="resource-pill"><span class="resource-code">C</span><span><b>DB Connections</b><small>Column C · 7 units</small></span></div>
+  <div class="resource-pill"><span class="resource-code">MEM</span><span><b>Server memory (RAM)</b><small>100 · 500 · 200 · 300 · 600 MB</small></span></div>
+</div></div>
+<div class="tabs" id="tabs"></div>
+
+<section id="t0" class="card"><h2>1. The order queue: Producer–Consumer</h2><div class="story note"><p><b>In the shop:</b> during a flash sale thousands of customers press “Buy” at once. Each click is handled by a web-server thread that drops the order into the order queue, which has only a few slots. Order-processing workers take orders out of the queue.</p><div class="who"><span><b>Producer</b> = customer / web-server thread placing an order</span><span><b>Consumer</b> = order-processing worker</span><span><b>Bounded buffer</b> = the order queue (N slots)</span><span><b>mutex</b> = lock so two threads never write the same slot</span><span><b>empty / full</b> = free slots / orders waiting</span></div><p class="tip">Try it: place orders until the queue is full, then watch the next customer get blocked instead of the order being lost.</p></div>
+
+<div class="row">Order queue size <input id="N" type="number" min="1" max="10" value="5">
+<button class="b" onclick="prod()">Customer places order (producer)</button><button class="b" onclick="cons()">Worker takes order (consumer)</button>
+<button class="b g" id="pa" onclick="pcAuto()">Auto-run</button><button class="b g" onclick="pcReset()">Reset</button></div>
+<div class="slots" id="slots"></div><div class="stat" id="sem"></div><div class="log" id="pclog"></div></section>
+
+<section id="t1" class="card" hidden><h2>2. Which order next? CPU scheduling</h2><div class="story note"><p><b>In the shop:</b> one worker (the CPU) faces many waiting orders, and the scheduler decides which one it handles next. Processing time is the work needed for payment, stock update and invoice. A customer’s waiting time is how long they wait before work on their order starts; turnaround is placing the order until it is finished.</p><div class="who"><span><b>FCFS</b> = first order in the queue goes first</span><span><b>SJF</b> = quickest order first</span><span><b>Round Robin</b> = every order gets a short turn, so big orders cannot block small ones</span></div></div>
+<div class="row"><select id="alg"><option value="fcfs">FCFS: first come, first served</option><option value="sjf">SJF: shortest order first</option><option value="rr" selected>Round Robin: fair time slices</option></select>
+Time slice <input id="q" type="number" min="1" value="2"><button class="b" onclick="cpuRun()">Run simulation</button></div>
+<div id="gt"></div><div class="scroll" id="ct"></div>
+<h2 style="margin-top:14px">Which rule should the shop use?</h2><div class="scroll" id="cmp"></div><p class="s" style="margin-top:10px">SJF gives customers the shortest average wait but can starve big orders. Round Robin has a higher average but treats every customer fairly during the rush.</p></section>
+
+<section id="t2" class="card" hidden><h2>3. Sharing payment, stock and DB safely: Banker’s Algorithm</h2><div class="story note"><p><b>In the shop:</b> every order holds some Payment Gateway slots, Inventory Service slots and DB connections, and asks for more as it progresses. Danger: Order A holds Inventory and waits for Payment while Order B holds Payment and waits for Inventory, so both wait forever (deadlock). The shop therefore grants a request only if every order can still finish afterwards.</p><div class="who"><span><b>Process</b> = one customer order</span><span><b>Allocation</b> = what it holds now</span><span><b>Max</b> = the most it will need</span><span><b>Need</b> = Max − Holding</span><span><b>Available</b> = free right now</span></div><p class="tip">Try the two examples: one request is safe and granted, the other would risk deadlock and is denied.</p></div>
+<div class="scroll" id="bt"></div><div class="row" style="margin-top:10px">
+<button class="b" onclick="chk()">Check: can every order still finish?</button><button class="b g" onclick="bRst()">Reset state</button></div>
+<div class="row">Order asks for more: <select id="rp"></select> <input id="r0" type="number" min="0" value="1" placeholder="Pay" title="Payment Gateway slots"><input id="r1" type="number" min="0" value="0" placeholder="Inv" title="Inventory Service slots"><input id="r2" type="number" min="0" value="2" placeholder="DB" title="DB connections">
+<button class="b" onclick="req(+$('#rp').value,[+$('#r0').value,+$('#r1').value,+$('#r2').value])">Send request</button></div>
+<div class="row"><button class="b g" onclick="bRst();$('#rp').value=1;req(1,[1,0,2])">Example: Laptop order asks 1 Pay · 0 Inv · 2 DB (safe)</button><button class="b g" onclick="bRst();$('#rp').value=4;req(4,[3,3,0])">Example: Backpack order asks 3 Pay · 3 Inv · 0 DB (unsafe)</button></div>
+<div id="bres" class="log"></div></section>
+
+<section id="t3" class="card" hidden><h2>4. Server memory for each order: Memory management</h2><div class="story note"><p><b>In the shop:</b> an order being processed needs RAM for its cart, payment data and invoice. Server memory is split into five partitions, and the allocator chooses which partition each order goes into. Leftover space inside partitions is wasted, and small leftovers can add up to enough memory that still cannot fit a big order.</p><div class="who"><span><b>First Fit</b> = first partition that is big enough</span><span><b>Best Fit</b> = smallest partition that is big enough</span><span><b>Worst Fit</b> = largest partition</span><span><b>Fragmentation</b> = free memory split into pieces too small to use</span></div></div>
+<div class="row"><select id="ma"><option value="ff">First Fit</option><option value="bf" selected>Best Fit</option><option value="wf">Worst Fit</option></select><button class="b" onclick="memRun()">Load orders into memory</button></div>
+<div id="mv"></div><div class="scroll" id="mt"></div><p id="mn"></p><div class="scroll" id="mc"></div></section>
+
+<section id="t4" class="card" hidden><h2>5. The full sale: all four working together</h2><div class="story note"><p><b>In the shop:</b> customers place orders (producers) into the order queue; the worker (consumer) picks the next one using Round Robin; Banker’s Algorithm checks that its payment, stock and DB needs are safe; Best Fit gives it server RAM; it is processed and delivered; then everything is released and a queue slot frees up.</p><div class="who"><span><b>Stage glows</b> = the part of the system working right now</span></div><p class="tip">Try “Flash-sale rush” (queue of 3) to see customers blocked and orders waiting for resources. A queue of 1 or 2 jams, because it fills with orders that cannot start yet.</p></div>
+
+<div class="row">Order queue <input id="iN" type="number" min="1" max="10" value="5"> Time slice <input id="iq" type="number" min="1" value="2">
+<button class="b" onclick="iStep()">Step</button><button class="b g" id="ia" onclick="iAuto()">Run all</button><button class="b g" onclick="$('#iN').value=3;iReset()">Flash-sale rush (queue = 3)</button><button class="b g" onclick="iReset()">Reset</button></div>
+<div class="pipe" id="pipe"></div><div class="stat" id="is"></div><div class="slots" id="ib"></div><div id="im"></div><div class="scroll" id="ir"></div>
+<h2 style="margin-top:12px">Shop activity log</h2><div class="log" id="il"></div></section>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const DEFAULT_ORDERS=[[0,5,212,[0,1,0],[7,5,3]],[1,3,417,[2,0,0],[3,2,2]],[2,8,112,[3,0,2],[9,0,2]],[3,2,426,[2,1,1],[2,2,2]],[4,6,90,[0,0,2],[4,3,3]]].map(([at,bt,mem,al,mx])=>({at,bt,mem,al,mx}));
+const O=DEFAULT_ORDERS.map(o=>({...o,al:o.al.slice(),mx:o.mx.slice()}));
+const RESOURCE_TOTALS=[10,5,7];
+const ITEMS=['Phone','Laptop','Headphones','Shoes','Backpack'];
+const nm=i=>`P${i} (${ITEMS[i]})`,fmt=v=>`${v[0]} Pay · ${v[1]} Inv · ${v[2]} DB`;
+const PIPE=['Customers<small>producers</small>','Order queue<small>bounded buffer</small>','Worker<small>CPU scheduling</small>','Banker’s check<small>deadlock avoidance</small>','Server RAM<small>Best Fit</small>','Process order<small>pay · stock · invoice</small>','Release<small>signal empty</small>'];
+const CL=['#8EB8F7','#8FDDB0','#F7B887','#F1D45F','#C9A3EE'],BL=[100,500,200,300,600];
+const chip=i=>`<span class="chip" style="background:${CL[i%5]}">P${i}</span>`;
+const sum=a=>a.reduce((x,y)=>x+y,0),sub=(a,b)=>a.map((x,i)=>x-b[i]),add=(a,b)=>a.map((x,i)=>x+b[i]);
+function availableResources(orders=O){const allocated=[0,0,0];orders.forEach(o=>o.al.forEach((v,k)=>allocated[k]+=v));return RESOURCE_TOTALS.map((v,k)=>v-allocated[k]);}
+let orderEditMode=false;
+function renderOrdersTable(editing=false){
+  const input=(i,field,value,label,resource)=>`<input class="order-cell-input" type="number" step="1" min="${resource===undefined&&(field==='bt'||field==='mem')?1:0}" value="${value}" data-order="${i}" data-field="${field}" ${resource===undefined?'':`data-resource="${resource}"`} aria-label="P${i} ${label}" required>`;
+  const vector=(i,field,values,label)=>`<div class="tuple-inputs">${values.map((v,k)=>input(i,field,v,`${label} ${'ABC'[k]}`,k)).join('')}</div>`;
+  $('#ot').innerHTML=`<thead><tr><th>Order</th><th>Item</th><th>Placed at</th><th>Processing time</th><th>RAM (MB)</th><th>Holding now (A B C)</th><th>Max needed (A B C)</th></tr></thead><tbody>${O.map((o,i)=>editing?`<tr><td class="edit-order-id">${chip(i)}</td><td>${ITEMS[i]}</td><td class="order-edit-cell">${input(i,'at',o.at,'arrival')}</td><td class="order-edit-cell">${input(i,'bt',o.bt,'burst')}</td><td class="order-edit-cell">${input(i,'mem',o.mem,'memory size')}</td><td class="order-edit-cell">${vector(i,'al',o.al,'allocation')}</td><td class="order-edit-cell">${vector(i,'mx',o.mx,'maximum')}</td></tr>`:`<tr><td>${chip(i)}</td><td>${ITEMS[i]}</td><td>${o.at}</td><td>${o.bt}</td><td>${o.mem}</td><td>${o.al.join(' ')}</td><td>${o.mx.join(' ')}</td></tr>`).join('')}</tbody>`;
+}
+function toggleOrderEdit(){
+  if(orderEditMode){cancelOrderEdit();return;}
+  orderEditMode=true;renderOrdersTable(true);$('#ordersEditorBar').hidden=false;
+  $('#editOrdersBtn').textContent='Editing orders';$('#editOrdersBtn').setAttribute('aria-expanded','true');
+  $('#orderEditMessage').className='order-edit-message';$('#orderEditMessage').textContent='Edit arrival, burst, memory, allocation, and max values. Allocation totals must fit the system resources.';
+}
+function closeOrderEditor(){orderEditMode=false;$('#ordersEditorBar').hidden=true;$('#editOrdersBtn').textContent='Edit orders';$('#editOrdersBtn').setAttribute('aria-expanded','false');renderOrdersTable(false);}
+function cancelOrderEdit(){closeOrderEditor();}
+function readOrderDraft(){
+  const get=(i,field,resource)=>{const q=`#ot [data-order="${i}"][data-field="${field}"]${resource===undefined?'':`[data-resource="${resource}"]`}`;const el=$(q);return el&&el.value.trim()!==''?Number(el.value):NaN;};
+  return O.map((o,i)=>({at:get(i,'at'),bt:get(i,'bt'),mem:get(i,'mem'),al:[0,1,2].map(k=>get(i,'al',k)),mx:[0,1,2].map(k=>get(i,'mx',k))}));
+}
+function validateOrderDraft(draft){
+  const errors=[];
+  draft.forEach((o,i)=>{
+    const ints=[['Arrival',o.at,0],['Burst',o.bt,1],['Memory',o.mem,1]];
+    ints.forEach(([label,v,min])=>{if(!Number.isInteger(v)||v<min)errors.push(`P${i}: ${label} must be a whole number of at least ${min}.`);});
+    for(let k=0;k<3;k++){
+      if(!Number.isInteger(o.al[k])||o.al[k]<0)errors.push(`P${i}: allocation ${'ABC'[k]} must be a non-negative whole number.`);
+      if(!Number.isInteger(o.mx[k])||o.mx[k]<0||o.mx[k]>RESOURCE_TOTALS[k])errors.push(`P${i}: max ${'ABC'[k]} must be between 0 and ${RESOURCE_TOTALS[k]}.`);
+      if(Number.isInteger(o.al[k])&&Number.isInteger(o.mx[k])&&o.al[k]>o.mx[k])errors.push(`P${i}: allocation ${'ABC'[k]} cannot exceed its maximum.`);
+    }
+  });
+  for(let k=0;k<3;k++){const allocated=draft.reduce((n,o)=>n+(Number.isInteger(o.al[k])&&o.al[k]>=0?o.al[k]:0),0);if(allocated>RESOURCE_TOTALS[k])errors.push(`Total allocation ${'ABC'[k]} (${allocated}) exceeds the ${RESOURCE_TOTALS[k]} available system units.`);}
+  return errors;
+}
+function commitOrderDraft(draft){draft.forEach((d,i)=>{O[i].at=d.at;O[i].bt=d.bt;O[i].mem=d.mem;O[i].al=d.al.slice();O[i].mx=d.mx.slice();});closeOrderEditor();refreshModulesAfterOrderEdit();}
+function saveOrders(){
+  const draft=readOrderDraft(),errors=validateOrderDraft(draft);
+  if(errors.length){$('#orderEditMessage').className='order-edit-message bad';$('#orderEditMessage').textContent=errors.slice(0,4).join(' ')+(errors.length>4?` And ${errors.length-4} more issue(s).`: '');return;}
+  commitOrderDraft(draft);
+}
+function restoreDefaultOrders(){const defaults=DEFAULT_ORDERS.map(o=>({...o,al:o.al.slice(),mx:o.mx.slice()}));commitOrderDraft(defaults);}
+function refreshModulesAfterOrderEdit(){
+  clearInterval(gt);clearInterval(it);clearInterval(pt);
+  pcReset();cmp();bRst();memRun();cpuRun();iReset();
+}
+renderOrdersTable(false);
+['Order Queue (Producer–Consumer)','Order Scheduling (CPU)','Safe Resources (Banker’s)','Server Memory','Full Sale Pipeline'].forEach((t,i)=>{const b=document.createElement('button');b.textContent=t;b.dataset.step=String(i+1);b.onclick=()=>tab(i);$('#tabs').append(b)});
+function tab(k){[...$('#tabs').children].forEach((b,i)=>b.classList.toggle('on',i==k));for(let i=0;i<5;i++)$('#t'+i).hidden=i!=k}
+/* ---- 1. Producer-Consumer ---- */
+let N,buf,nid,pr,co,bl,pt;
+function pcLog(s,c){$('#pclog').insertAdjacentHTML('afterbegin',`<div class="${c||''}">${s}</div>`)}
+function pcReset(){clearInterval(pt);pt=0;$('#pa').textContent='Auto-run';N=Math.max(1,+$('#N').value||5);buf=[];nid=1;pr=co=bl=0;$('#pclog').innerHTML='';pcDraw()}
+function prod(){if(buf.length>=N){bl++;pcLog('Customer thread (producer): wait(empty) → BLOCKED, the order queue is full','bad')}else{pcLog(`Customer places Order #${nid}: wait(empty), lock(mutex), add to queue, unlock(mutex), signal(full)`);buf.push(nid++);pr++}pcDraw()}
+function cons(){if(!buf.length){bl++;pcLog('Worker (consumer): wait(full) → BLOCKED, no orders waiting','bad')}else{const x=buf.shift();co++;pcLog(`Worker takes Order #${x}: wait(full), lock(mutex), remove, unlock(mutex), signal(empty) → processing it`,'ok')}pcDraw()}
+function pcAuto(){if(pt){clearInterval(pt);pt=0;$('#pa').textContent='Auto-run'}else{$('#pa').textContent='Pause';pt=setInterval(()=>Math.random()<.6?prod():cons(),650)}}
+function pcDraw(){$('#slots').innerHTML=Array.from({length:N},(_,i)=>`<div class="slot">${i<buf.length?chip(buf[i]-1).replace(/P\d+/,'#'+buf[i]):''}</div>`).join('');
+$('#sem').innerHTML=`<span>mutex (queue lock) = <b>1</b></span><span>empty (free slots) = <b>${N-buf.length}</b></span><span>full (orders waiting) = <b>${buf.length}</b></span><span>orders placed <b>${pr}</b></span><span>picked up by workers <b>${co}</b></span><span>customers made to wait <b>${bl}</b></span>`}
+/* ---- 2. CPU scheduling ---- */
+function sched(a,q){const n=O.length,ct=Array(n).fill(0),sg=[];let t=0;
+if(a=='fcfs')O.forEach((o,i)=>{t=Math.max(t,o.at);sg.push([i,t,t+o.bt]);t+=o.bt;ct[i]=t});
+else if(a=='sjf'){const d=new Set;while(d.size<n){const r=O.map((_,i)=>i).filter(i=>!d.has(i)&&O[i].at<=t);if(!r.length){t++;continue}const i=r.reduce((x,y)=>O[y].bt<O[x].bt?y:x);sg.push([i,t,t+O[i].bt]);t+=O[i].bt;ct[i]=t;d.add(i)}}
+else{const rem=O.map(o=>o.bt),qu=[0],seen=new Set([0]);while(qu.length){const i=qu.shift(),r=Math.min(q,rem[i]);sg.push([i,t,t+r]);t+=r;rem[i]-=r;O.forEach((o,j)=>{if(!seen.has(j)&&o.at<=t){seen.add(j);qu.push(j)}});if(rem[i])qu.push(i);else ct[i]=t}}
+const tat=ct.map((c,i)=>c-O[i].at),wt=tat.map((x,i)=>x-O[i].bt);return{sg,ct,tat,wt,at:sum(tat)/n,aw:sum(wt)/n}}
+let gt;
+function cpuRun(){clearInterval(gt);const r=sched($('#alg').value,Math.max(1,+$('#q').value||2));let k=0;$('#ct').innerHTML='';
+const draw=()=>{const s=r.sg.slice(0,k),T=r.sg[r.sg.length-1][2];
+$('#gt').innerHTML=`<div class="gantt">${s.map(x=>`<div style="flex:${x[2]-x[1]};background:${CL[x[0]]}">P${x[0]}</div>`).join('')}</div><div class="tm">${s.map(x=>`<span style="flex:${x[2]-x[1]}">${x[1]}</span>`).join('')}<span>${k?s[k-1][2]:0}</span></div>`;
+if(k>=r.sg.length){clearInterval(gt);$('#ct').innerHTML='<table><tr><th>Order</th><th>Finished at</th><th>Turnaround = finished − placed</th><th>Customer waited = turnaround − processing</th></tr>'+O.map((_,i)=>`<tr><td>${chip(i)}</td><td>${r.ct[i]}</td><td>${r.tat[i]}</td><td>${r.wt[i]}</td></tr>`).join('')+`<tr><th>Average</th><th></th><th>${r.at.toFixed(1)}</th><th>${r.aw.toFixed(1)}</th></tr></table>`}};
+gt=setInterval(()=>{k++;draw()},420);draw()}
+function cmp(){$('#cmp').innerHTML='<table><tr><th>Algorithm</th><th>Avg turnaround</th><th>Avg waiting</th></tr>'+[['fcfs','FCFS'],['sjf','SJF'],['rr','Round Robin (q = 2)']].map(([a,n])=>{const r=sched(a,2);return`<tr><td>${n}</td><td>${r.at.toFixed(1)}</td><td>${r.aw.toFixed(1)}</td></tr>`}).join('')+'</table>'}
+/* ---- 3. Banker's ---- */
+let B;
+function safe(al,mx,av){const n=al.length,fin=Array(n).fill(0),seq=[],st=[];let w=av.slice(),go=1;
+while(go){go=0;for(let i=0;i<n;i++){const nd=sub(mx[i],al[i]);if(!fin[i]&&nd.every((x,k)=>x<=w[k])){st.push(`${nm(i)} needs ${fmt(nd)} ≤ free ${fmt(w)} → can finish and returns its resources → free becomes ${fmt(add(w,al[i]))}`);w=add(w,al[i]);fin[i]=1;seq.push(i);go=1}}}
+return{ok:seq.length==n,seq,st}}
+function bRst(){B={al:O.map(o=>o.al.slice()),mx:O.map(o=>o.mx.slice()),av:availableResources()};bDraw();$('#bres').innerHTML=''}
+function bDraw(){$('#bt').innerHTML='<table><tr><th>Order</th><th>Holding now (Pay · Inv · DB)</th><th>Max needed</th><th>Still needs = Max − Holding</th></tr>'+B.al.map((a,i)=>`<tr><td>${chip(i)}</td><td>${a.join(' ')}</td><td>${B.mx[i].join(' ')}</td><td>${sub(B.mx[i],a).join(' ')}</td></tr>`).join('')+`<tr><th>Free now</th><th colspan="3">${B.av.join(' ')}</th></tr></table>`}
+function chk(){const r=safe(B.al,B.mx,B.av);$('#bres').innerHTML=r.st.map(s=>`<div>${s}</div>`).join('')+(r.ok?`<div class="ok">SAFE: every order can finish. A safe processing order: ${r.seq.map(nm).join(' → ')}</div>`:'<div class="bad">UNSAFE: no order can finish, so the shop could deadlock.</div>')}
+function req(p,r){const nd=sub(B.mx[p],B.al[p]);let m;
+if(r.some((x,k)=>x>nd[k]))m=`<div class="bad">Rejected: ${nm(p)} asked for more than it declared at checkout (still needs at most ${fmt(nd)}).</div>`;
+else if(r.some((x,k)=>x>B.av[k]))m=`<div class="bad">${nm(p)} must wait: it asked for ${fmt(r)} but only ${fmt(B.av)} is free.</div>`;
+else{const al=B.al.map(a=>a.slice());al[p]=add(al[p],r);const av=sub(B.av,r),s=safe(al,B.mx,av);
+if(s.ok){B.al=al;B.av=av;m=`<div>Trial: give ${nm(p)} ${fmt(r)}; free would be ${fmt(av)}.</div>`+s.st.map(x=>`<div>${x}</div>`).join('')+`<div class="ok">GRANTED. Every order can still finish, in this order: ${s.seq.map(nm).join(' → ')}</div>`;bDraw()}
+else m=`<div>Trial: give ${nm(p)} ${fmt(r)}; free would be ${fmt(av)}.</div><div class="bad">DENIED. Afterwards no order could finish; they would all wait on each other (deadlock). The request is rolled back and ${nm(p)} waits.</div>`}
+$('#bres').innerHTML=m}
+/* ---- 4. Memory ---- */
+function mem(a){const f=BL.slice(),res=[],use=BL.map(()=>[]);
+O.forEach((o,i)=>{const c=f.map((_,j)=>j).filter(j=>f[j]>=o.mem);const j=c.length?c.reduce((x,y)=>a=='ff'?x:(a=='bf'?f[y]<f[x]:f[y]>f[x])?y:x):-1;if(j>=0){f[j]-=o.mem;use[j].push(i)}res.push(j)});return{f,res,use}}
+function memRun(){const a=$('#ma').value,r=mem(a);
+$('#mv').innerHTML=BL.map((b,j)=>`<div>Memory partition ${j+1}: ${b} MB</div><div class="mb" style="width:${b/6}%;min-width:150px">${r.use[j].map(i=>`<div style="flex:${O[i].mem};background:${CL[i]}">P${i}</div>`).join('')}<div class="fr" style="flex:${r.f[j]}">${r.f[j]?r.f[j]+' free':''}</div></div>`).join('');
+$('#mt').innerHTML='<table><tr><th>Order</th><th>RAM needed</th><th>Partition</th><th>Left in partition</th></tr>'+O.map((o,i)=>{const j=r.res[i];return`<tr><td>${chip(i)}</td><td>${o.mem} MB</td><td>${j<0?'<span class="bad">WAITING for RAM</span>':BL[j]+' MB'}</td><td>${j<0?'–':r.f[j]+' MB'}</td></tr>`}).join('')+'</table>';
+const un=r.res.map((j,i)=>j<0?'P'+i:'').filter(Boolean),tot=sum(r.f),big=Math.max(...r.f);
+$('#mn').innerHTML=`Total free: <b>${tot} MB</b>. Largest hole: <b>${big} MB</b>. `+(un.length?`<span class="bad">Orders ${un.join(', ')} must wait for RAM although ${tot} MB is free in total: the free space is split into small pieces (external fragmentation).</span>`:'<span class="ok">Every order got its RAM.</span>');
+$('#mc').innerHTML='<table><tr><th>Algorithm</th><th>Orders left waiting</th><th>Free MB</th><th>Largest hole</th></tr>'+[['ff','First Fit'],['bf','Best Fit'],['wf','Worst Fit']].map(([k,n])=>{const x=mem(k);return`<tr><td>${n}</td><td>${x.res.map((j,i)=>j<0?'P'+i:'').filter(Boolean).join(', ')||'none'}</td><td>${sum(x.f)}</td><td>${Math.max(...x.f)}</td></tr>`}).join('')+'</table>'}
+/* ---- 5. Integrated ---- */
+let S,it;
+function iReset(){clearInterval(it);it=0;$('#ia').textContent='Run all';S={t:0,N:Math.max(1,+$('#iN').value||5),q:Math.max(1,+$('#iq').value||2),buf:[],arr:new Set,blk:new Set,rem:O.map(o=>o.bt),al:O.map(o=>o.al.slice()),mx:O.map(o=>o.mx.slice()),av:availableResources(),f:BL.slice(),adm:{},ct:O.map(()=>null),log:[],hot:[],done:0};iDraw()}
+function iAuto(){if(it){clearInterval(it);it=0;$('#ia').textContent='Run all'}else{$('#ia').textContent='Pause';it=setInterval(iStep,550)}}
+function iStep(){if(S.done>=O.length)return;const lg=(m,c)=>{S.hot=/^Customer/.test(m)?[0,1]:/^Banker.*GRANTED/.test(m)?[3,4]:/^Banker/.test(m)?[3]:/^Memory/.test(m)?[4]:/^Worker \(CPU\)/.test(m)?[2,5]:/delivered/.test(m)?[2,5,6]:S.hot;S.log.unshift(`<div class="${c||''}">t=${S.t}: ${m}</div>`)};
+O.forEach((o,i)=>{if(o.at<=S.t&&!S.arr.has(i)){if(S.buf.length<S.N){S.buf.push(i);S.arr.add(i);S.blk.delete(i);lg(`Customer thread (producer) puts ${nm(i)} in the order queue (free slots = ${S.N-S.buf.length})`)}else if(!S.blk.has(i)){S.blk.add(i);lg(`Customer thread for ${nm(i)} BLOCKED: order queue is full`,'bad')}}});
+let pick=-1;
+for(const i of S.buf){if(S.adm[i]!==undefined){pick=i;break}
+const nd=sub(S.mx[i],S.al[i]);
+if(nd.some((x,k)=>x>S.av[k])){lg(`Banker’s: ${nm(i)} waits, needs ${fmt(nd)} but only ${fmt(S.av)} is free`);continue}
+const al=S.al.map(a=>a.slice());al[i]=S.mx[i].slice();const av=sub(S.av,nd);
+if(!safe(al,S.mx,av).ok){lg(`Banker’s: ${nm(i)} DENIED, granting it could cause a deadlock`,'bad');continue}
+const c=S.f.map((_,j)=>j).filter(j=>S.f[j]>=O[i].mem);
+if(!c.length){lg(`Memory: no partition fits ${nm(i)} (${O[i].mem} MB), it waits`,'bad');continue}
+const j=c.reduce((x,y)=>S.f[y]<S.f[x]?y:x);S.al=al;S.av=av;S.f[j]-=O[i].mem;S.adm[i]=j;
+lg(`Banker’s: ${nm(i)} GRANTED (safe). Best Fit puts its ${O[i].mem} MB into the ${BL[j]} MB partition`,'ok');pick=i;break}
+if(pick<0){const nx=O.filter((o,i)=>!S.arr.has(i)&&o.at>S.t).map(o=>o.at);
+if(nx.length){S.t=Math.min(...nx);lg('Worker idle: no queued order can start yet, waiting for new customers')}
+else{lg(S.blk.size?'Queue jam: the queue is full of orders waiting for resources, so the orders that could free them cannot get in. Use a bigger queue.':'Stalled: no queued order can be admitted','bad');clearInterval(it);it=0}return iDraw()}
+const r=Math.min(S.q,S.rem[pick]);S.t+=r;S.rem[pick]-=r;S.buf=S.buf.filter(x=>x!=pick);lg(`Worker (CPU) processes ${nm(pick)}: payment, stock, invoice for ${r} unit(s), ${S.rem[pick]} left`);
+if(S.rem[pick]>0)S.buf.push(pick);
+else{S.ct[pick]=S.t;S.av=add(S.av,S.mx[pick]);S.f[S.adm[pick]]+=O[pick].mem;delete S.adm[pick];S.al[pick]=[0,0,0];S.mx[pick]=[0,0,0];S.done++;lg(`${nm(pick)} delivered! Payment/DB slots and RAM released, consumer signals empty`,'ok')}
+if(S.done>=O.length){clearInterval(it);it=0;$('#ia').textContent='Run all';lg('Sale rush cleared: all orders processed','ok')}iDraw()}
+function iDraw(){$('#pipe').innerHTML=PIPE.map((x,k)=>`<div class="${S.hot.includes(k)?'on':''}">${x}</div>`).join('<i>→</i>');$('#is').innerHTML=`<span>time <b>${S.t}</b></span><span>free now: <b>${fmt(S.av)}</b></span><span>completed <b>${S.done}/${O.length}</b></span><span>empty = <b>${S.N-S.buf.length}</b> full = <b>${S.buf.length}</b></span>`;
+$('#ib').innerHTML=Array.from({length:S.N},(_,i)=>`<div class="slot">${i<S.buf.length?chip(S.buf[i]):''}</div>`).join('');
+$('#im').innerHTML=BL.map((b,j)=>{const u=Object.keys(S.adm).filter(i=>S.adm[i]==j);return`<div class="mb" title="Block ${j+1}" style="width:${b/6}%;min-width:150px">${u.map(i=>`<div style="flex:${O[i].mem};background:${CL[i]}">P${i}</div>`).join('')}<div class="fr" style="flex:${S.f[j]}">${b} MB · ${S.f[j]} free</div></div>`}).join('');
+const d=O.map((_,i)=>S.ct[i]!==null?i:-1).filter(i=>i>=0);
+$('#ir').innerHTML=d.length?'<table><tr><th>Order</th><th>Completion</th><th>Turnaround</th><th>Waiting</th></tr>'+d.map(i=>{const t=S.ct[i]-O[i].at;return`<tr><td>${chip(i)}</td><td>${S.ct[i]}</td><td>${t}</td><td>${t-O[i].bt}</td></tr>`}).join('')+(d.length==O.length?`<tr><th>Average</th><th></th><th>${(sum(d.map(i=>S.ct[i]-O[i].at))/d.length).toFixed(1)}</th><th>${(sum(d.map(i=>S.ct[i]-O[i].at-O[i].bt))/d.length).toFixed(1)}</th></tr>`:'')+'</table>':'';
+$('#il').innerHTML=S.log.slice(0,60).join('')}
+$('#rp').innerHTML=O.map((_,i)=>`<option value="${i}">${nm(i)}</option>`).join('');$('#rp').value=1;
+tab(0);pcReset();cmp();bRst();memRun();cpuRun();iReset();
+</script></body></html>
